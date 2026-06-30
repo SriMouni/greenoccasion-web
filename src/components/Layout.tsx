@@ -167,7 +167,7 @@ export const Footer = () => {
               <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral/95 p-1">
                 <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Green Occasion logo" className="h-full w-auto object-contain" />
               </span>
-              <span className="font-serif text-2xl font-bold tracking-tight">Green Occasion JMS</span>
+              <span className="font-serif text-2xl font-bold tracking-tight">Green Occasion</span>
             </div>
             <p className="text-sm text-neutral/50 leading-relaxed">
               An open library of peer-reviewed environmental research — browse, read, and download
@@ -222,7 +222,7 @@ export const Footer = () => {
 
         <div className="pt-8 border-t border-neutral/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[11px] text-neutral/45 uppercase tracking-[0.14em]">
-            © 2026 Green Occasion JMS — Environmental Intelligence. Published under CC BY 4.0.
+            © 2026 Green Occasion — Environmental Intelligence. Published under CC BY 4.0.
           </p>
           <div className="flex gap-6 text-[11px] text-neutral/45 uppercase tracking-[0.14em]">
             <Link to="/about" className="hover:text-neutral transition-colors">Privacy</Link>

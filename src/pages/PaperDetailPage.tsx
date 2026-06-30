@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { describeLicense } from '../licenses/license-display.ts';
+import { apiUrl } from '../lib/api-base.ts';
 import {
   AlignLeft,
   ArrowLeft,
@@ -176,7 +177,7 @@ export const PaperDetailPage = () => {
     );
   }
 
-  const pdfUrl = paper.pdf_url || null;          // inline-viewable only when stored on-site
+  const pdfUrl = paper.pdf_url ? apiUrl(paper.pdf_url) : null;   // inline-viewable only when stored on-site
   const pdfStored = Boolean(paper.pdf_stored);   // a real PDF saved in our storage
   const sourceUrl = paper.source_url || (paper.doi ? `https://doi.org/${paper.doi}` : null);
   // Resolve a displayable license (name + official deed link) for attribution.
@@ -215,7 +216,9 @@ export const PaperDetailPage = () => {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             {pdfStored ? (
               <a
-                href={`/api/paper/${paper.id}/download`}
+                href={apiUrl(`/api/paper/${paper.id}/download`)}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setPaper({ ...paper, downloads: paper.downloads + 1 })}
                 className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-lg font-bold shadow-md hover:bg-primary-dark transition-colors"
               >

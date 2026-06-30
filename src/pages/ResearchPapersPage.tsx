@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { apiUrl } from '../lib/api-base.ts';
 import { Calendar, Download, Search, SlidersHorizontal, Users, X } from 'lucide-react';
 
 type Filters = {
@@ -193,7 +194,7 @@ export const ResearchPapersPage = () => {
                     <Link to={`/paper/${paper.id}`} className="text-xs font-semibold uppercase tracking-[0.12em] text-primary hover:text-primary-dark">
                       Read Paper
                     </Link>
-                    <a href={`/api/paper/${paper.id}/download`} className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-secondary hover:text-primary">
+                    <a href={apiUrl(`/api/paper/${paper.id}/download`)} className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-secondary hover:text-primary">
                       <Download className="w-4 h-4" /> Download PDF
                     </a>
                   </div>

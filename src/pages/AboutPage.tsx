@@ -11,7 +11,7 @@ export const AboutPage = () => {
             <h4 className="label-caps">About The Platform</h4>
           </div>
           <h1 className="font-serif text-5xl md:text-6xl leading-[1.05] text-on-surface">
-            Green Occasion JMS
+            Green Occasion
           </h1>
           <p className="max-w-3xl text-lg md:text-xl text-on-surface-variant leading-relaxed">
             A scholarly discovery and management platform for environmental research. We help

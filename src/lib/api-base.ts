@@ -14,4 +14,11 @@ if (BASE && typeof window !== 'undefined') {
   };
 }
 
-export {};
+export const API_BASE = BASE;
+
+/**
+ * Prefix an /api or /uploads path with the backend origin. Use for URLs that the
+ * fetch patch can't rewrite — e.g. <iframe src>, <a href> downloads, window.open.
+ */
+export const apiUrl = (path: string): string =>
+  path && (path.startsWith('/api') || path.startsWith('/uploads')) ? BASE + path : path;

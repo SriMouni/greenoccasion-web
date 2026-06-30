@@ -1,5 +1,6 @@
 import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { apiUrl } from '../lib/api-base.ts';
 import { motion } from 'motion/react';
 import {
   ArrowRight,
@@ -147,7 +148,7 @@ export const HomePage = () => {
             Advancing the frontier of ecological knowledge through open discovery.
           </h2>
           <p className="text-muted leading-relaxed">
-            Green Occasion JMS serves as a critical bridge between rigorous scientific research and
+            Green Occasion serves as a critical bridge between rigorous scientific research and
             real-world climate solutions. We empower global stakeholders with a unified platform for
             scholarly management and environmental discovery.
           </p>
@@ -182,7 +183,7 @@ export const HomePage = () => {
             </span>
             <h2 className="font-serif text-3xl md:text-4xl font-bold">Everything you need, intelligently automated</h2>
             <p className="text-neutral/70 leading-relaxed">
-              From discovery to reading, Green Occasion JMS layers AI across the whole research
+              From discovery to reading, Green Occasion layers AI across the whole research
               lifecycle — so every paper arrives summarised, highlighted, and organised.
             </p>
           </Reveal>
@@ -312,7 +313,7 @@ export const HomePage = () => {
                       Read Full Paper
                     </Link>
                     <a
-                      href={`/api/paper/${paper.id}/download`}
+                      href={apiUrl(`/api/paper/${paper.id}/download`)}
                       className="inline-flex items-center gap-1.5 rounded-md border border-primary/40 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] text-primary hover:bg-primary hover:text-neutral transition-colors"
                     >
                       <Download className="h-4 w-4" /> Download PDF
@@ -344,7 +345,7 @@ export const HomePage = () => {
             Publish your breakthrough.
           </h2>
           <p className="mx-auto max-w-2xl text-neutral/70 leading-relaxed">
-            Join the global community of researchers using Green Occasion JMS for high-impact
+            Join the global community of researchers using Green Occasion for high-impact
             scholarly discovery and seamless manuscript management.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -358,7 +359,7 @@ export const HomePage = () => {
               to="/about"
               className="inline-flex items-center gap-2 rounded-md border border-neutral/30 px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-neutral hover:bg-neutral/10 transition-colors"
             >
-              JMS Tutorial
+              Tutorial
             </Link>
           </div>
         </div>

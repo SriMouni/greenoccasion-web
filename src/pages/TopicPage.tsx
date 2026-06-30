@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { apiUrl } from '../lib/api-base.ts';
 import { ArrowLeft, Download, Calendar, Users } from 'lucide-react';
 
 export const TopicPage = () => {
@@ -127,7 +128,7 @@ export const TopicPage = () => {
                     Read Paper
                   </Link>
                   <a
-                    href={`/api/paper/${paper.id}/download`}
+                    href={apiUrl(`/api/paper/${paper.id}/download`)}
                     className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-secondary hover:text-primary"
                   >
                     <Download className="w-4 h-4" />
