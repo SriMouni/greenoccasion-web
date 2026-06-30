@@ -54,7 +54,7 @@ export const Navbar = () => {
               'flex h-10 w-10 items-center justify-center rounded-lg p-1',
               overlay ? 'bg-neutral/90' : 'bg-surface-container'
             )}>
-              <img src="/logo.png" alt="Green Occasion logo" className="h-full w-auto object-contain" />
+              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Green Occasion logo" className="h-full w-auto object-contain" />
             </span>
             <span className="leading-tight">
               <span className={cn('block font-serif text-lg font-bold', overlay ? 'text-neutral' : 'text-ink')}>
@@ -171,7 +171,7 @@ export const Footer = () => {
           <div className="space-y-6 md:col-span-1">
             <div className="flex items-center gap-2.5">
               <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral/95 p-1">
-                <img src="/logo.png" alt="Green Occasion logo" className="h-full w-auto object-contain" />
+                <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Green Occasion logo" className="h-full w-auto object-contain" />
               </span>
               <span className="font-serif text-2xl font-bold tracking-tight">Green Occasion JMS</span>
             </div>
