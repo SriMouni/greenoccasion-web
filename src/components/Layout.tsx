@@ -60,12 +60,6 @@ export const Navbar = () => {
               <span className={cn('block font-serif text-lg font-bold', overlay ? 'text-neutral' : 'text-ink')}>
                 Green Occasion
               </span>
-              <span className={cn(
-                'block text-[10px] uppercase tracking-[0.22em] font-semibold -mt-0.5',
-                overlay ? 'text-neutral/70' : 'text-secondary'
-              )}>
-                JMS
-              </span>
             </span>
           </Link>
 

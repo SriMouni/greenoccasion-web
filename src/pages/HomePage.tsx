@@ -122,7 +122,7 @@ export const HomePage = () => {
             </div>
 
             <h1 className="font-serif text-6xl md:text-8xl font-bold leading-[0.98] tracking-tight">
-              Green Occasion<br />JMS
+              Green Occasion
             </h1>
 
             <p className="mx-auto max-w-xl text-base md:text-lg text-neutral/75 leading-relaxed">
