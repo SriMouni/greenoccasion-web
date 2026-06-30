@@ -15,8 +15,10 @@ import { AuthorProfilePage } from './pages/AuthorProfilePage';
 import { AboutPage } from './pages/AboutPage';
 
 export default function PublicApp() {
+  // BASE_URL matches Vite's `base` (e.g. "/greenoccasion-web/" on GitHub Pages,
+  // "/" on a root domain) so client-side routes resolve under the sub-path.
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<HomePage />} />
