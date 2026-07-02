@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { describeLicense } from '../licenses/license-display.ts';
 import { apiUrl } from '../lib/api-base.ts';
@@ -21,6 +21,9 @@ import {
 } from 'lucide-react';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Heavy PDF.js viewer — lazy-loaded so pdfjs only ships when a PDF is actually opened.
+const PdfViewer = lazy(() => import('../components/PdfViewer.tsx'));
 
 // Wrap any AI-identified key sentences found in the text with a yellow highlight.
 const renderWithHighlights = (text: string, highlights: string[]) => {
@@ -368,9 +371,18 @@ export const PaperDetailPage = () => {
           {/* Full text */}
           <section>
             <h2 className="text-lg font-semibold text-primary border-b border-outline-variant pb-2 mb-6">Full Text</h2>
-            <div className="h-[800px] w-full bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant">
+            <div className="h-[800px] w-full bg-surface-container-lowest rounded-xl overflow-auto border border-outline-variant">
               {pdfStored && pdfUrl ? (
-                <iframe src={`${pdfUrl}#toolbar=0&navpanes=0`} className="w-full h-full border-none" title="PDF Viewer" />
+                <Suspense
+                  fallback={
+                    <div className="flex h-full items-center justify-center text-sm text-muted">Loading viewer…</div>
+                  }
+                >
+                  <PdfViewer
+                    url={pdfUrl}
+                    highlights={Array.isArray(paper.ai_highlights) ? paper.ai_highlights : []}
+                  />
+                </Suspense>
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-on-surface-variant space-y-4 px-6 text-center">
                   <FileText className="h-10 w-10 opacity-40" />
