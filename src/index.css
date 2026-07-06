@@ -149,3 +149,36 @@
     @apply border border-primary/40 text-primary bg-transparent rounded-md font-sans text-xs uppercase tracking-[0.12em] font-semibold transition-all duration-200 hover:bg-primary hover:text-on-primary cursor-pointer inline-flex items-center justify-center gap-2;
   }
 }
+
+/* ── Per-journal theme overrides (applied at runtime via <html data-theme>) ──
+   The default (teal/emerald) lives in @theme above. Each preset below only
+   overrides the palette-driving tokens; higher specificity than :root wins. */
+:root[data-theme="medical"] {
+  --color-primary: #2563eb;              /* blue-600 */
+  --color-primary-dark: #1e3a8a;         /* blue-900 (hero/footer/CTA) */
+  --color-primary-container: #93c5fd;    /* blue-300 */
+  --color-on-primary-container: #1e3a8a;
+  --color-primary-fixed: #bfdbfe;
+  --color-primary-fixed-dim: #93c5fd;
+  --color-inverse-primary: #93c5fd;
+  --color-secondary: #0891b2;            /* cyan-600 */
+  --color-secondary-container: #cffafe;  /* cyan-100 */
+  --color-on-secondary-container: #155e75;
+  --color-surface-container-low: #eff6ff; /* blue-50 tint */
+  --color-surface-tint: #2563eb;
+}
+
+:root[data-theme="amber"] {
+  --color-primary: #b45309;              /* amber-700 */
+  --color-primary-dark: #78350f;         /* amber-900 */
+  --color-primary-container: #fcd34d;    /* amber-300 */
+  --color-on-primary-container: #78350f;
+  --color-primary-fixed: #fde68a;
+  --color-primary-fixed-dim: #fcd34d;
+  --color-inverse-primary: #fcd34d;
+  --color-secondary: #ca8a04;            /* yellow-600 */
+  --color-secondary-container: #fef9c3;  /* yellow-100 */
+  --color-on-secondary-container: #854d0e;
+  --color-surface-container-low: #fffbeb; /* amber-50 tint */
+  --color-surface-tint: #b45309;
+}

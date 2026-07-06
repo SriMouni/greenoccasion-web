@@ -36,6 +36,11 @@ jobs:
           # Backend API origin. Set repo Variable VITE_API_BASE_URL to e.g.
           # https://api.greenoccasion.in once the backend is live (empty = no data yet).
           VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          # This site serves ONE journal (its heading/theme come from this slug).
+          # A separate journal site would set a different slug.
+          VITE_JOURNAL_SLUG: green-occasion
+          # Author portal (JMS) for the "Submit Research" handoff.
+          VITE_JMS_URL: https://greenoccasion-jms.onrender.com
 
       - name: SPA fallback (GitHub Pages serves 404.html for unknown paths)
         run: cp dist/index.html dist/404.html

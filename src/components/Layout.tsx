@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Globe, History, Menu, Share2, X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useJournal } from '../lib/journal';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
 // Public reading site — no login, no admin. (Admins use the separate admin app.)
 export const Navbar = () => {
   const location = useLocation();
+  const { name } = useJournal();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -58,7 +60,7 @@ export const Navbar = () => {
             </span>
             <span className="leading-tight">
               <span className={cn('block font-serif text-lg font-bold', overlay ? 'text-neutral' : 'text-ink')}>
-                Green Occasion
+                {name}
               </span>
             </span>
           </Link>
@@ -158,6 +160,7 @@ export const PublicLayout = () => {
 };
 
 export const Footer = () => {
+  const { name } = useJournal();
   return (
     <footer className="bg-[#1b1c1c] text-neutral">
       <div className="container-custom py-20">
@@ -167,7 +170,7 @@ export const Footer = () => {
               <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral/95 p-1">
                 <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Green Occasion logo" className="h-full w-auto object-contain" />
               </span>
-              <span className="font-serif text-2xl font-bold tracking-tight">Green Occasion</span>
+              <span className="font-serif text-2xl font-bold tracking-tight">{name}</span>
             </div>
             <p className="text-sm text-neutral/50 leading-relaxed">
               An open library of peer-reviewed environmental research — browse, read, and download
@@ -222,7 +225,7 @@ export const Footer = () => {
 
         <div className="pt-8 border-t border-neutral/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[11px] text-neutral/45 uppercase tracking-[0.14em]">
-            © 2026 Green Occasion — Environmental Intelligence. Published under CC BY 4.0.
+            © 2026 {name}. Published under CC BY 4.0.
           </p>
           <div className="flex gap-6 text-[11px] text-neutral/45 uppercase tracking-[0.14em]">
             <Link to="/about" className="hover:text-neutral transition-colors">Privacy</Link>

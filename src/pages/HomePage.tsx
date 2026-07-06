@@ -19,12 +19,13 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { TOPICS } from '../data/mockData';
+import { useJournal } from '../lib/journal';
 
 const ETHOS = [
-  { icon: BookOpen, title: 'Discovery', text: 'A unified, searchable repository of peer-reviewed climate and environmental research.' },
-  { icon: Layers, title: 'Management', text: 'A sophisticated workflow streamlining the full lifecycle of scholarly knowledge.' },
+  { icon: BookOpen, title: 'Climate Research', text: 'A unified, searchable repository of peer-reviewed climate change and sustainability research.' },
+  { icon: Layers, title: 'Sustainable Futures', text: 'Advancing the science of decarbonization, resilience, and the transition to a low-carbon world.' },
   { icon: ShieldCheck, title: 'Rigorous Review', text: 'Double-blind peer review ensuring the highest standards of scientific integrity.' },
-  { icon: Globe, title: 'Open Access', text: 'Democratizing environmental intelligence for a sustainable and resilient future.' },
+  { icon: Globe, title: 'Open Access', text: 'Democratizing climate intelligence for a sustainable and resilient future for all.' },
 ];
 
 const FEATURES = [
@@ -59,6 +60,7 @@ const initials = (name?: string) =>
 type TopicRow = { field: string; paper_count: number | string; topic_count?: number };
 
 export const HomePage = () => {
+  const { name } = useJournal();
   const [papers, setPapers] = useState<any[]>([]);
   const [topics, setTopics] = useState<TopicRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -122,13 +124,13 @@ export const HomePage = () => {
               </Link>
             </div>
 
-            <h1 className="font-serif text-6xl md:text-8xl font-bold leading-[0.98] tracking-tight">
-              Green Occasion
+            <h1 className="mx-auto max-w-4xl font-serif text-5xl md:text-7xl font-bold leading-[0.98] tracking-tight">
+              {name}
             </h1>
 
-            <p className="mx-auto max-w-xl text-base md:text-lg text-neutral/75 leading-relaxed">
-              The premier scholarly discovery and management platform for environmental intelligence
-              and sustainable innovation.
+            <p className="mx-auto max-w-2xl text-base md:text-lg text-neutral/75 leading-relaxed">
+              A peer-reviewed, open-access journal advancing the science of climate change,
+              decarbonization, and resilient pathways to a sustainable future.
             </p>
 
             <div className="pt-6 flex justify-center">
@@ -145,12 +147,12 @@ export const HomePage = () => {
             Our Ethos
           </span>
           <h2 className="font-serif text-3xl md:text-4xl font-bold leading-snug">
-            Advancing the frontier of ecological knowledge through open discovery.
+            Advancing climate science for a sustainable and resilient future.
           </h2>
           <p className="text-muted leading-relaxed">
-            Green Occasion serves as a critical bridge between rigorous scientific research and
-            real-world climate solutions. We empower global stakeholders with a unified platform for
-            scholarly management and environmental discovery.
+            {name} is a critical bridge between rigorous climate research and real-world
+            action — publishing peer-reviewed work on mitigation, adaptation, and the transition
+            to a low-carbon world, and making it openly accessible to researchers everywhere.
           </p>
         </div>
 
@@ -183,7 +185,7 @@ export const HomePage = () => {
             </span>
             <h2 className="font-serif text-3xl md:text-4xl font-bold">Everything you need, intelligently automated</h2>
             <p className="text-neutral/70 leading-relaxed">
-              From discovery to reading, Green Occasion layers AI across the whole research
+              From discovery to reading, {name} layers AI across the whole research
               lifecycle — so every paper arrives summarised, highlighted, and organised.
             </p>
           </Reveal>
@@ -215,7 +217,7 @@ export const HomePage = () => {
           <Reveal className="flex items-end justify-between gap-4 mb-10">
             <div>
               <h2 className="font-serif text-3xl md:text-4xl font-bold">Thematic Domains</h2>
-              <p className="text-muted mt-2">Comprehensive coverage of the green innovation landscape.</p>
+              <p className="text-muted mt-2">Comprehensive coverage of the climate and sustainability research landscape.</p>
             </div>
             <Link to="/topics" className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-primary hover:text-primary-dark">
               Browse all topics <ArrowUpRight className="h-4 w-4" />
@@ -345,8 +347,8 @@ export const HomePage = () => {
             Publish your breakthrough.
           </h2>
           <p className="mx-auto max-w-2xl text-neutral/70 leading-relaxed">
-            Join the global community of researchers using Green Occasion for high-impact
-            scholarly discovery and seamless manuscript management.
+            Join the global community of researchers publishing with {name} — advancing
+            high-impact climate science through open access and rigorous peer review.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link
