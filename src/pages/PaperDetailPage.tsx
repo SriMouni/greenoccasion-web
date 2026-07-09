@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { describeLicense } from '../licenses/license-display.ts';
 import { apiUrl } from '../lib/api-base.ts';
+import { useJournal } from '../lib/journal';
 import {
   AlignLeft,
   ArrowLeft,
@@ -44,8 +45,20 @@ const renderWithHighlights = (text: string, highlights: string[]) => {
   );
 };
 
+// Get-or-create a <meta name="robots"> tag so we can flip indexability per paper.
+const setRobotsMeta = (content: string) => {
+  let tag = document.head.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute('name', 'robots');
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', content);
+};
+
 export const PaperDetailPage = () => {
   const { id } = useParams();
+  const { name: journalName } = useJournal();
   const [paper, setPaper] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -86,6 +99,16 @@ export const PaperDetailPage = () => {
         setLoading(false);
       });
   }, [id]);
+
+  // SEO: aggregated (open-access, republished) papers are duplicate content — keep them
+  // out of Google's index so they can't dilute or downrank our original journal. Original
+  // papers stay indexable. Restore the default on unmount.
+  useEffect(() => {
+    if (!paper) return;
+    const isOriginal = paper.origin === 'original';
+    setRobotsMeta(isOriginal ? 'index,follow' : 'noindex,follow');
+    return () => setRobotsMeta('index,follow');
+  }, [paper]);
 
   useEffect(() => {
     if (!id) return;
@@ -206,6 +229,15 @@ export const PaperDetailPage = () => {
           <div className="max-w-4xl">
             <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
               {paper.topic && <span className="label-caps text-primary">{paper.topic}</span>}
+              {paper.origin === 'original' ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-neutral">
+                  <BadgeCheck className="h-3 w-3" /> Published by {journalName}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
+                  Indexed · Open-Access from {sourceName}
+                </span>
+              )}
               {license && (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary-container px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-on-secondary-container">
                   <span className="h-1.5 w-1.5 rounded-full bg-secondary" /> Open Access

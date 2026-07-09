@@ -69,7 +69,7 @@ export const HomePage = () => {
     fetch('/api/papers')
       .then(res => res.json())
       .then(data => {
-        setPapers(Array.isArray(data) ? data.slice(0, 4) : []);
+        setPapers(Array.isArray(data) ? data.slice(0, 24) : []);
         setLoading(false);
       })
       .catch(err => {
@@ -89,6 +89,7 @@ export const HomePage = () => {
     : TOPICS.slice(0, 5)
   );
   const spotlights = papers.slice(0, 2);
+  const originals = papers.filter((p: any) => p.origin === 'original').slice(0, 3);
 
   return (
     <div>
@@ -340,6 +341,36 @@ export const HomePage = () => {
           </Link>
         </div>
       </section>
+
+      {/* ── Published by us (original journal, distinct from the indexed library) ── */}
+      {originals.length > 0 && (
+        <section className="border-y border-line/70 bg-surface-container-low/50">
+          <div className="container-custom py-20 md:py-24">
+            <div className="mb-12 max-w-2xl space-y-3">
+              <span className="label-caps text-primary">Original Journal</span>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold">Published by {name}</h2>
+              <p className="leading-relaxed text-muted">
+                Original, peer-reviewed research published directly by our editorial board —
+                distinct from the open-access papers we index from other sources.
+              </p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {originals.map((paper) => (
+                <Link
+                  key={paper.id}
+                  to={`/paper/${paper.id}`}
+                  className="glass-card group flex flex-col space-y-3 p-6 transition-all hover:-translate-y-0.5 hover:border-primary/40"
+                >
+                  <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-neutral">Original</span>
+                  <h3 className="font-serif text-xl font-bold leading-snug text-ink transition-colors group-hover:text-primary line-clamp-3">{paper.title}</h3>
+                  <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-muted">{paper.abstract}</p>
+                  <p className="pt-1 text-xs text-muted">{paper.author_names || 'Unknown author'}{paper.created_at ? ` · ${new Date(paper.created_at).getFullYear()}` : ''}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── CTA (contained band) ── */}
       <section className="container-custom pb-20 md:pb-24">

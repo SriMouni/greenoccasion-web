@@ -12,9 +12,10 @@ type Filters = {
   source: string;
   license: string;
   year: string;
+  origin: string;
 };
 
-const EMPTY: Filters = { keyword: '', author: '', field: '', topic: '', source: '', license: '', year: '' };
+const EMPTY: Filters = { keyword: '', author: '', field: '', topic: '', source: '', license: '', year: '', origin: '' };
 
 const uniqueSorted = (values: Array<string | number | null | undefined>) =>
   Array.from(new Set(values.filter((v) => v !== null && v !== undefined && String(v).trim() !== '').map(String)))
@@ -49,6 +50,7 @@ export const ResearchPapersPage = () => {
     return papers.filter((p) => {
       if (kw && !`${p.title} ${p.abstract}`.toLowerCase().includes(kw)) return false;
       if (au && !String(p.author_names || '').toLowerCase().includes(au)) return false;
+      if (filters.origin && p.origin !== filters.origin) return false;
       if (filters.field && p.field_label !== filters.field) return false;
       if (filters.topic && p.topic !== filters.topic) return false;
       if (filters.source && p.source_name !== filters.source) return false;
@@ -152,6 +154,23 @@ export const ResearchPapersPage = () => {
 
         {/* Results */}
         <div className="min-w-0">
+          {/* Origin segmented toggle — separates our original journal from the aggregated index */}
+          <div className="mb-5 inline-flex flex-wrap gap-1 rounded-xl border border-line/70 bg-surface-bright p-1 text-xs font-semibold">
+            {[
+              { v: '', label: 'All' },
+              { v: 'original', label: `Published by ${name}` },
+              { v: 'aggregated', label: 'Open-Access Index' },
+            ].map((o) => (
+              <button
+                key={o.v}
+                type="button"
+                onClick={() => set('origin', o.v)}
+                className={`rounded-lg px-3.5 py-1.5 transition-colors ${filters.origin === o.v ? 'bg-primary text-neutral' : 'text-muted hover:text-primary'}`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
           <p className="label-caps mb-5">{loading ? '—' : filtered.length} of {papers.length} Publications</p>
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -186,6 +205,11 @@ export const ResearchPapersPage = () => {
                   <div className="flex flex-1 flex-col p-6 space-y-3">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="label-caps">{paper.field_label || paper.topic || 'General'}</span>
+                      {paper.origin === 'original' ? (
+                        <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-neutral">Original</span>
+                      ) : (
+                        <span className="rounded-full bg-surface-container px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-muted">Indexed</span>
+                      )}
                       {paper.license_name && (
                         <span className="rounded-full bg-secondary-container px-2 py-0.5 text-[10px] font-bold text-on-secondary-container">{paper.license_name}</span>
                       )}
