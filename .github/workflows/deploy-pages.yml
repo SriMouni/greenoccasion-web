@@ -31,8 +31,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Project site is served at https://<user>.github.io/greenoccasion-web/
-          BASE_PATH: /greenoccasion-web/
+          # Custom root domain (thecarbonreview.org) → served at the root path.
+          BASE_PATH: /
           # Backend API origin. Set repo Variable VITE_API_BASE_URL to e.g.
           # https://api.greenoccasion.in once the backend is live (empty = no data yet).
           VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
