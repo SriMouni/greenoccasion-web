@@ -1,0 +1,35 @@
+# The Carbon Review — crawler policy
+# Aggregated (open-access, republished) paper pages carry a per-page
+# <meta name="robots" content="noindex,follow">, so they are crawlable
+# but kept out of the index. Original journal content is fully indexable.
+
+User-agent: *
+Allow: /
+
+# AI answer engines / training crawlers — explicitly allowed so our ORIGINAL
+# research can be surfaced and cited in AI answers (generative-engine optimization).
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://thecarbonreview.org/sitemap.xml

@@ -4,6 +4,7 @@ import { Globe, History, Menu, Share2, X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useJournal } from '../lib/journal';
+import { useJsonLd } from '../lib/seo';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -139,6 +140,15 @@ export const Navbar = () => {
 };
 
 export const PublicLayout = () => {
+  const { name } = useJournal();
+  // Site-wide structured data — identifies the publication to search + AI engines.
+  useJsonLd('site', {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name,
+    ...(typeof window !== 'undefined' ? { url: window.location.origin } : {}),
+    publisher: { '@type': 'Organization', name },
+  });
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

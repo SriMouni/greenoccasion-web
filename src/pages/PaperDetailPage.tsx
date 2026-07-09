@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { describeLicense } from '../licenses/license-display.ts';
 import { apiUrl } from '../lib/api-base.ts';
 import { useJournal } from '../lib/journal';
+import { useSeo, useJsonLd, metaDescription } from '../lib/seo';
 import {
   AlignLeft,
   ArrowLeft,
@@ -109,6 +110,42 @@ export const PaperDetailPage = () => {
     setRobotsMeta(isOriginal ? 'index,follow' : 'noindex,follow');
     return () => setRobotsMeta('index,follow');
   }, [paper]);
+
+  // Per-page SEO (title, description, canonical, Open Graph).
+  useSeo({
+    title: paper ? `${paper.title} — ${journalName}` : undefined,
+    description: paper ? metaDescription(paper.ai_short_summary || paper.abstract || '') : undefined,
+    type: 'article',
+  });
+
+  // Structured data — only for ORIGINAL papers, where we are genuinely the publisher.
+  // (Aggregated papers are noindex; claiming publisher/authorship would be misleading.)
+  useJsonLd(
+    'article',
+    paper && paper.origin === 'original'
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'ScholarlyArticle',
+          headline: paper.title,
+          name: paper.title,
+          ...(paper.abstract ? { abstract: paper.abstract } : {}),
+          author: String(paper.author_names || '')
+            .split(',')
+            .map((n: string) => n.trim())
+            .filter(Boolean)
+            .map((n: string) => ({ '@type': 'Person', name: n })),
+          ...(paper.publication_year || paper.created_at
+            ? { datePublished: paper.publication_year ? String(paper.publication_year) : paper.created_at }
+            : {}),
+          publisher: { '@type': 'Organization', name: journalName },
+          isPartOf: { '@type': 'Periodical', name: journalName },
+          ...(paper.doi
+            ? { identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value: paper.doi }, sameAs: `https://doi.org/${paper.doi}` }
+            : {}),
+          url: typeof window !== 'undefined' ? window.location.href : undefined,
+        }
+      : null
+  );
 
   useEffect(() => {
     if (!id) return;
