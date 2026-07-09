@@ -156,13 +156,17 @@ export const HomePage = () => {
           </p>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {ETHOS.map(({ icon: Icon, title, text }, i) => (
-            <Reveal key={title} delay={i * 0.08} className="space-y-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-md bg-surface-container text-primary">
+            <Reveal
+              key={title}
+              delay={i * 0.08}
+              className="space-y-3 rounded-2xl border border-line/70 bg-surface-bright p-7 shadow-[0_1px_3px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(15,23,42,0.08)] hover:border-primary/30"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary-container text-primary">
                 <Icon className="h-5 w-5" />
               </span>
-              <h3 className="font-serif text-xl font-semibold">{title}</h3>
+              <h3 className="font-serif text-xl font-semibold text-ink">{title}</h3>
               <p className="text-sm text-muted leading-relaxed">{text}</p>
             </Reveal>
           ))}
@@ -231,7 +235,7 @@ export const HomePage = () => {
                 <Link
                   key={topic.id}
                   to={`/topics/${encodeURIComponent(topic.id)}`}
-                  className={`group relative overflow-hidden rounded-lg flex items-end ${big ? 'md:col-span-3 min-h-72' : 'md:col-span-2 min-h-56'}`}
+                  className={`group relative overflow-hidden rounded-xl flex items-end ${big ? 'md:col-span-3 min-h-[440px]' : 'md:col-span-2 min-h-[360px]'}`}
                 >
                   <img
                     src={`https://picsum.photos/seed/${topic.id}/900/600`}
@@ -337,23 +341,23 @@ export const HomePage = () => {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="bg-primary-dark text-neutral py-24">
-        <div className="container-custom text-center space-y-7">
+      {/* ── CTA (contained band) ── */}
+      <section className="container-custom pb-20 md:pb-24">
+        <div className="rounded-2xl bg-primary-dark px-8 py-16 text-center text-neutral shadow-[0_16px_40px_rgba(4,47,46,0.18)]">
           <span className="inline-flex rounded-full border border-neutral/25 px-3 py-1 text-[11px] uppercase tracking-[0.16em] font-semibold text-neutral/70">
             Call for Submissions
           </span>
-          <h2 className="font-serif text-4xl md:text-6xl font-bold leading-[1.05]">
+          <h2 className="mt-5 font-serif text-4xl md:text-5xl font-bold leading-[1.05]">
             Publish your breakthrough.
           </h2>
-          <p className="mx-auto max-w-2xl text-neutral/70 leading-relaxed">
+          <p className="mx-auto mt-4 max-w-2xl text-neutral/70 leading-relaxed">
             Join the global community of researchers publishing with {name} — advancing
             high-impact climate science through open access and rigorous peer review.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/submit"
-              className="inline-flex items-center gap-2 rounded-md bg-neutral px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary-dark hover:bg-neutral/90 transition-colors"
+              className="inline-flex items-center gap-2 rounded-md bg-neutral px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary-dark hover:bg-primary-fixed transition-colors"
             >
               Submit Research <ArrowRight className="h-4 w-4" />
             </Link>
@@ -361,7 +365,7 @@ export const HomePage = () => {
               to="/about"
               className="inline-flex items-center gap-2 rounded-md border border-neutral/30 px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-neutral hover:bg-neutral/10 transition-colors"
             >
-              Tutorial
+              About the Journal
             </Link>
           </div>
         </div>

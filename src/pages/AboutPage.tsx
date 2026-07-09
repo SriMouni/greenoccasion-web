@@ -1,143 +1,147 @@
-import { Leaf, Compass, Users, BookOpen, ShieldCheck, Globe2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  ArrowRight, BadgeCheck, Eye, Globe2, Lock, MessagesSquare,
+  Quote, ScrollText, ShieldCheck, Sparkles, Target,
+} from 'lucide-react';
+import { useJournal } from '../lib/journal';
+
+const PRINCIPLES = [
+  { icon: ShieldCheck, title: 'Scientific Rigor', body: 'Evidence-based conclusions backed by robust methodology and exhaustive peer verification.' },
+  { icon: Eye, title: 'Transparency', body: 'Open access to data, code, and methods so every result can be independently reproduced.' },
+  { icon: MessagesSquare, title: 'Constructive Review', body: 'A mentorship-driven feedback loop that strengthens manuscripts while upholding strict standards.' },
+];
+
+const STAGES = [
+  { n: '01', title: 'Editorial Screening', body: 'Initial review for relevance and scope before reviewers are assigned.' },
+  { n: '02', title: 'Expert Assignment', body: 'Matched to specialists for informed, domain-aware peer review.' },
+  { n: '03', title: 'Decision Workflow', body: 'A transparent path to revisions or a final decision on merit.' },
+  { n: '04', title: 'Publication', body: 'Released open-access with persistent metadata and DOI linkage.' },
+];
 
 export const AboutPage = () => {
+  const { name } = useJournal();
   return (
-    <div className="container-custom py-12 md:py-16">
-      <div className="max-w-5xl mx-auto">
-        {/* Hero / Mission */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-2 text-secondary">
-            <Leaf className="w-4 h-4" />
-            <h4 className="label-caps">About The Platform</h4>
-          </div>
-          <h1 className="font-serif text-5xl md:text-6xl leading-[1.05] text-on-surface">
-            Green Occasion
+    <div className="min-h-screen">
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=2400&q=80"
+          alt="Forested mountains"
+          referrerPolicy="no-referrer"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(150deg, rgba(4,47,46,0.82) 0%, rgba(15,33,22,0.55) 50%, rgba(4,47,46,0.85) 100%)' }} />
+        <div className="relative container-custom py-20 md:py-28 text-neutral">
+          <p className="font-mono-label text-[11px] uppercase tracking-[0.24em] text-primary-fixed/90 mb-4">Our Founding Purpose</p>
+          <h1 className="font-serif text-4xl md:text-6xl leading-[1.04] max-w-3xl">
+            Advancing rigorous science for a <em className="italic">low-carbon future.</em>
           </h1>
-          <p className="max-w-3xl text-lg md:text-xl text-on-surface-variant leading-relaxed">
-            A scholarly discovery and management platform for environmental research. We help
-            researchers, reviewers, and editors publish, curate, and find rigorous work on climate,
-            ecology, and sustainable systems — openly and with lasting integrity.
+          <p className="mt-5 max-w-2xl text-neutral/80 text-base md:text-lg leading-relaxed">
+            {name} is an open-access, peer-reviewed journal for research on climate change,
+            decarbonization, and the transition to a sustainable world — published openly and with
+            lasting integrity.
           </p>
-        </section>
+          <Link to="/papers" className="mt-8 inline-flex items-center gap-2 rounded-md bg-neutral px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary-dark transition-colors hover:bg-primary-fixed">
+            Explore the Archive <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
 
-        <div className="editorial-divider" />
-
-        {/* Mission detail + principles */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <article className="glass-card p-8 lg:col-span-7 space-y-5">
-            <div className="flex items-center gap-3">
-              <Compass className="w-5 h-5 text-primary" />
-              <h2 className="font-serif text-3xl text-on-surface">Our Mission</h2>
-            </div>
-            <p className="text-on-surface-variant leading-relaxed">
-              Our mission is to make high-quality environmental research openly accessible to
-              scientists, policymakers, and practitioners. We aim to accelerate measurable, real-world
-              impact by improving the speed, transparency, and discoverability of publication.
-            </p>
-            <p className="text-on-surface-variant leading-relaxed">
-              Every manuscript is treated as part of a long-term scholarly record. We prioritize
-              reproducibility, transparent review signals, and durable archival quality for each
-              published paper.
-            </p>
-          </article>
-
-          <aside className="glass-card p-8 lg:col-span-5 space-y-5">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="w-5 h-5 text-primary" />
-              <h3 className="font-serif text-2xl text-on-surface">Editorial Principles</h3>
-            </div>
-            <ul className="space-y-4">
-              {[
-                'Scientific rigor and evidence-based conclusions',
-                'Clear methodology and transparent data references',
-                'Constructive peer feedback before publication',
-                'Open-access dissemination for global reach',
-              ].map((item) => (
-                <li key={item} className="flex gap-3 text-sm text-on-surface-variant leading-relaxed">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </aside>
-        </section>
-
-        <div className="editorial-divider" />
-
-        {/* Peer review process */}
-        <section className="space-y-8">
-          <div className="flex items-center gap-3">
-            <Users className="w-5 h-5 text-primary" />
-            <h2 className="font-serif text-3xl text-on-surface">The Peer-Review Process</h2>
+      {/* Mission + pull quote */}
+      <section className="container-custom py-16 md:py-20 grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <Target className="h-5 w-5 text-primary" />
+            <h2 className="font-serif text-3xl text-ink">Our Mission</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                step: '01',
-                title: 'Editorial Screening',
-                body: 'Initial review for relevance, scope, and baseline quality before assignment.',
-              },
-              {
-                step: '02',
-                title: 'Reviewer Assignment',
-                body: 'Matched to specialists by topic to ensure informed, domain-aware feedback.',
-              },
-              {
-                step: '03',
-                title: 'Decision Workflow',
-                body: 'A transparent path to approve, request revisions, or decline with reasoning.',
-              },
-              {
-                step: '04',
-                title: 'Publication',
-                body: 'Released with persistent metadata, DOI linkage, and citation tracking.',
-              },
-            ].map((s) => (
-              <div key={s.step} className="glass-card p-6 space-y-3">
-                <span className="label-caps text-on-secondary-container">{s.step}</span>
-                <h3 className="font-serif text-xl text-on-surface">{s.title}</h3>
-                <p className="text-sm text-on-surface-variant leading-relaxed">{s.body}</p>
+          <p className="text-muted leading-relaxed">
+            We believe high-quality climate research should be a global public good. Our mission is to
+            accelerate measurable, real-world impact by improving the speed, transparency, and
+            discoverability of publication.
+          </p>
+          <p className="mt-4 text-muted leading-relaxed">
+            Every manuscript is treated as part of a long-term scholarly record — with reproducibility,
+            transparent review signals, and durable archival quality for each published paper.
+          </p>
+        </div>
+        <figure className="rounded-2xl border border-line/70 bg-surface-bright p-8 shadow-[0_8px_30px_rgba(15,23,42,0.05)]">
+          <Quote className="h-7 w-7 text-primary/30" />
+          <blockquote className="mt-3 font-serif text-xl italic leading-snug text-ink">
+            Research is not just about data; it is about the legacy we leave for a planet in transition.
+          </blockquote>
+          <figcaption className="mt-4 flex items-center gap-2 text-sm">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary"><ScrollText className="h-4 w-4" /></span>
+            <span className="font-mono-label text-[11px] uppercase tracking-widest text-muted">Editorial Director · {name}</span>
+          </figcaption>
+        </figure>
+      </section>
+
+      {/* Editorial principles */}
+      <section className="bg-surface-bright border-y border-line/60">
+        <div className="container-custom py-16 md:py-20">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="label-caps mb-3">Core Values</p>
+            <h2 className="font-serif text-3xl md:text-4xl text-ink">Editorial Principles</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {PRINCIPLES.map(({ icon: Icon, title, body }) => (
+              <div key={title} className="rounded-2xl border border-line/70 bg-surface p-7">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary-container text-primary"><Icon className="h-5 w-5" /></span>
+                <h3 className="mt-4 font-serif text-xl text-ink">{title}</h3>
+                <p className="mt-2 text-sm text-muted leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <div className="editorial-divider" />
-
-        {/* Publication & open-access policy */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <article className="glass-card p-8 space-y-4">
-            <div className="flex items-center gap-3">
-              <Globe2 className="w-5 h-5 text-primary" />
-              <h3 className="font-serif text-2xl text-on-surface">Open-Access Policy</h3>
+      {/* Peer-review process */}
+      <section className="container-custom py-16 md:py-20">
+        <div className="max-w-2xl mb-12">
+          <h2 className="font-serif text-3xl md:text-4xl text-ink">The Peer-Review Process</h2>
+          <p className="mt-3 text-muted leading-relaxed">A meticulous journey from manuscript to global impact — designed for transparency and academic rigor.</p>
+        </div>
+        <div className="relative grid gap-8 md:grid-cols-4">
+          <div className="hidden md:block absolute left-0 right-0 top-5 h-px bg-line/70" />
+          {STAGES.map((s) => (
+            <div key={s.n} className="relative">
+              <span className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary font-mono-label text-xs font-bold text-neutral shadow-sm">{s.n}</span>
+              <h3 className="mt-4 font-serif text-lg text-ink">{s.title}</h3>
+              <p className="mt-1.5 text-sm text-muted leading-relaxed">{s.body}</p>
             </div>
-            <p className="text-sm text-on-surface-variant leading-relaxed">
-              Authors retain attribution while granting publication rights under their selected
-              open-access terms. Wherever possible, published work is made freely available so that
-              findings can travel beyond institutional paywalls.
-            </p>
-            <p className="text-sm text-on-surface-variant leading-relaxed">
-              Submissions must be original and free of plagiarism. Any conflicts of interest should be
-              disclosed at the time of submission.
-            </p>
-          </article>
+          ))}
+        </div>
+      </section>
 
-          <article className="glass-card p-8 space-y-4">
+      {/* Open-access commitment */}
+      <section className="container-custom pb-20">
+        <div className="grid overflow-hidden rounded-2xl bg-primary-dark text-neutral md:grid-cols-[1.5fr_1fr]">
+          <div className="p-8 md:p-12">
             <div className="flex items-center gap-3">
-              <BookOpen className="w-5 h-5 text-primary" />
-              <h3 className="font-serif text-2xl text-on-surface">Publication Standards</h3>
+              <Lock className="h-5 w-5 text-primary-fixed" />
+              <h2 className="font-serif text-2xl md:text-3xl">Open-Access Commitment</h2>
             </div>
-            <p className="text-sm text-on-surface-variant leading-relaxed">
-              Accepted papers are archived with persistent identifiers and structured metadata,
-              keeping the scholarly record stable and citable over time.
+            <p className="mt-4 max-w-xl text-neutral/75 leading-relaxed">
+              As stewards of climate knowledge, we believe research must be accessible to everyone. All
+              papers are published under CC-BY 4.0, so scientists, policymakers, and the public can read,
+              share, and build on findings without barriers.
             </p>
-            <p className="text-sm text-on-surface-variant leading-relaxed">
-              For policy and editorial inquiries, please reach the editorial desk through the
-              submission channel.
-            </p>
-          </article>
-        </section>
-      </div>
+            <div className="mt-6 flex flex-wrap gap-4 text-sm">
+              <span className="inline-flex items-center gap-2 text-neutral/85"><BadgeCheck className="h-4 w-4 text-primary-fixed" /> DOI &amp; metadata verified</span>
+              <span className="inline-flex items-center gap-2 text-neutral/85"><Globe2 className="h-4 w-4 text-primary-fixed" /> CC-BY 4.0 open access</span>
+            </div>
+          </div>
+          <div className="flex flex-col justify-center gap-4 border-t border-white/10 bg-white/[0.04] p-8 md:border-l md:border-t-0 md:p-12">
+            <p className="font-serif text-xl italic">Become part of the movement.</p>
+            <p className="text-sm text-neutral/65">We're inviting submissions and applications for our reviewer database.</p>
+            <div className="flex flex-col gap-3">
+              <Link to="/submit" className="inline-flex items-center justify-center gap-2 rounded-md bg-neutral px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-primary-dark transition-colors hover:bg-primary-fixed">
+                <Sparkles className="h-4 w-4" /> Submit Research
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

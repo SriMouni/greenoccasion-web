@@ -46,25 +46,18 @@ export const Navbar = () => {
           'fixed top-0 z-50 w-full transition-colors duration-300',
           overlay
             ? 'bg-transparent border-b border-transparent'
-            : 'bg-surface/90 backdrop-blur-md border-b border-line/60'
+            : 'bg-surface-bright/95 backdrop-blur-md border-b border-line/70 shadow-[0_2px_18px_rgba(15,23,42,0.07)]'
         )}
       >
         <div className="container-custom flex h-16 items-center justify-between gap-4">
           {/* Brand */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <span className={cn(
-              'flex h-10 w-10 items-center justify-center rounded-lg p-1',
-              overlay ? 'bg-neutral/90' : 'bg-surface-container'
-            )}>
-              <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Green Occasion logo" className="h-full w-auto object-contain" />
-            </span>
-            <span className="leading-tight">
-              <span className={cn('block font-serif text-lg font-bold', overlay ? 'text-neutral' : 'text-ink')}>
-                {name}
-              </span>
-            </span>
+            <img src={`${import.meta.env.BASE_URL}logo.png`} alt={`${name} logo`} className="h-12 w-12 shrink-0 object-contain" />
+            <span className={cn('block font-serif text-lg font-bold leading-tight', overlay ? 'text-neutral' : 'text-ink')}>{name}</span>
           </Link>
 
+          {/* Right cluster: links + submit + mobile toggle */}
+          <div className="flex items-center gap-6 lg:gap-8">
           {/* Desktop links */}
           <div className="hidden lg:flex items-center gap-7">
             {NAV_ITEMS.map((item) => (
@@ -74,9 +67,8 @@ export const Navbar = () => {
                 className={cn(
                   'relative text-[13px] font-medium transition-colors',
                   overlay
-                    ? 'text-neutral/80 hover:text-neutral'
-                    : 'text-muted hover:text-primary',
-                  isActive(item.path) && (overlay ? 'text-neutral' : 'text-primary')
+                    ? (isActive(item.path) ? 'text-neutral' : 'text-neutral/80 hover:text-neutral')
+                    : (isActive(item.path) ? 'text-primary' : 'text-muted hover:text-primary')
                 )}
               >
                 {item.name}
@@ -92,9 +84,7 @@ export const Navbar = () => {
               to="/submit"
               className={cn(
                 'inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] transition-colors',
-                overlay
-                  ? 'bg-neutral text-primary-dark hover:bg-neutral/90'
-                  : 'bg-primary text-neutral hover:bg-primary-dark'
+                overlay ? 'bg-neutral text-primary-dark hover:bg-neutral/90' : 'bg-primary text-neutral hover:bg-primary-dark'
               )}
             >
               Submit Research
@@ -110,11 +100,12 @@ export const Navbar = () => {
           >
             {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="lg:hidden border-t border-line/60 bg-surface">
+          <div className="lg:hidden border-t border-line/60 bg-surface-bright">
             <div className="container-custom flex flex-col py-4 gap-1">
               {NAV_ITEMS.map((item) => (
                 <Link
@@ -166,15 +157,13 @@ export const Footer = () => {
       <div className="container-custom py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6 md:col-span-1">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral/95 p-1">
-                <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Green Occasion logo" className="h-full w-auto object-contain" />
-              </span>
-              <span className="font-serif text-2xl font-bold tracking-tight">{name}</span>
+            <div className="flex items-start gap-3">
+              <img src={`${import.meta.env.BASE_URL}logo.png`} alt={`${name} logo`} className="h-16 w-16 shrink-0 object-contain" />
+              <span className="font-serif text-xl font-bold leading-tight tracking-tight">{name}</span>
             </div>
             <p className="text-sm text-neutral/50 leading-relaxed">
-              An open library of peer-reviewed environmental research — browse, read, and download
-              papers across the green innovation landscape.
+              An open-access library of peer-reviewed climate and sustainability research — browse,
+              read, and download papers on the transition to a low-carbon future.
             </p>
             <div className="flex gap-4">
               {[Globe, Share2, History].map((Icon, i) => (

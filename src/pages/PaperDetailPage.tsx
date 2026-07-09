@@ -185,123 +185,128 @@ export const PaperDetailPage = () => {
   // Original publisher/journal this paper came from (falls back to the data aggregators).
   const sourceName = paper.source_name || 'OpenAlex / Semantic Scholar';
   const pubDate = paper.created_at ? new Date(paper.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '—';
+  const pubYear = paper.publication_year || (paper.created_at ? new Date(paper.created_at).getFullYear() : null);
   const authorList = (paper.author_names || 'Unknown Author').split(',').map((n: string) => n.trim()).filter(Boolean);
   const keywords: string[] = String(paper.topic || '').split(/[,/&]| and /i).map((k) => k.trim()).filter(Boolean);
   const aiTags: string[] = Array.isArray(paper.ai_tags) ? paper.ai_tags : [];
 
+  const card = 'rounded-2xl border border-line/70 bg-surface-bright shadow-[0_2px_16px_rgba(15,23,42,0.05)]';
+  const sectionHeading = 'font-serif text-2xl font-bold text-ink border-b border-line/60 pb-3 mb-6';
+
   return (
-    <main className="container-custom py-8">
-      {/* Breadcrumb */}
-      <nav className="mb-10">
-        <Link to="/papers" className="inline-flex items-center gap-1 text-on-surface-variant hover:text-primary transition-colors group">
-          <ArrowLeft className="h-[18px] w-[18px]" />
-          <span className="text-xs font-semibold uppercase tracking-[0.05em]">Back to Research</span>
-        </Link>
-      </nav>
+    <div className="min-h-screen">
+      {/* ── Header band ── */}
+      <section className="border-b border-line/60 bg-surface-bright">
+        <div className="container-custom py-8 md:py-10">
+          <Link to="/papers" className="mb-7 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-primary">
+            <ArrowLeft className="h-4 w-4" />
+            <span className="font-semibold uppercase tracking-[0.05em] text-xs">Back to Research</span>
+          </Link>
 
-      {/* Header */}
-      <div className="mb-8">
-        <div className="max-w-4xl">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary mb-6 leading-tight">{paper.title}</h1>
-          <p className="font-serif text-lg text-on-surface-variant italic">
-            By {authorList.map((name: string, i: number) => (
-              <React.Fragment key={`${name}-${i}`}>
-                <Link to={`/author/${encodeURIComponent(name)}`} className="text-on-surface font-semibold not-italic hover:text-primary">{name}</Link>
-                {i < authorList.length - 1 ? ', ' : ''}
-              </React.Fragment>
-            ))}
-          </p>
+          <div className="max-w-4xl">
+            <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+              {paper.topic && <span className="label-caps text-primary">{paper.topic}</span>}
+              {license && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary-container px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-on-secondary-container">
+                  <span className="h-1.5 w-1.5 rounded-full bg-secondary" /> Open Access
+                </span>
+              )}
+            </div>
 
-          {/* Action bar */}
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            {pdfStored ? (
-              <a
-                href={apiUrl(`/api/paper/${paper.id}/download`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setPaper({ ...paper, downloads: paper.downloads + 1 })}
-                className="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-lg font-bold shadow-md hover:bg-primary-dark transition-colors"
+            <h1 className="font-serif text-4xl md:text-5xl font-bold leading-tight text-ink">{paper.title}</h1>
+
+            <p className="mt-5 font-serif text-lg italic text-muted">
+              By {authorList.map((name: string, i: number) => (
+                <React.Fragment key={`${name}-${i}`}>
+                  <Link to={`/author/${encodeURIComponent(name)}`} className="font-semibold not-italic text-ink hover:text-primary">{name}</Link>
+                  {i < authorList.length - 1 ? ', ' : ''}
+                </React.Fragment>
+              ))}
+            </p>
+
+            {/* Meta row — real values */}
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
+              {pubYear && <span className="inline-flex items-center gap-1.5"><Info className="h-4 w-4" /> {pubDate}</span>}
+              <span className="hidden sm:inline text-line">·</span>
+              <span>{sourceName}</span>
+              {typeof paper.downloads === 'number' && paper.downloads > 0 && (
+                <><span className="hidden sm:inline text-line">·</span><span className="inline-flex items-center gap-1.5"><Download className="h-4 w-4" /> {paper.downloads.toLocaleString()} downloads</span></>
+              )}
+              {typeof paper.citations === 'number' && paper.citations > 0 && (
+                <><span className="hidden sm:inline text-line">·</span><span>{paper.citations.toLocaleString()} citations</span></>
+              )}
+            </div>
+
+            {/* Action bar */}
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              {pdfStored ? (
+                <a
+                  href={apiUrl(`/api/paper/${paper.id}/download`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setPaper({ ...paper, downloads: (paper.downloads || 0) + 1 })}
+                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-neutral shadow-sm transition-colors hover:bg-primary-dark"
+                >
+                  <Download className="h-5 w-5" /> Download PDF
+                </a>
+              ) : (
+                <span className="inline-flex items-center gap-2 rounded-lg bg-surface-container px-4 py-3 text-sm font-semibold text-muted">
+                  <Info className="h-4 w-4" /> Metadata only — no PDF stored
+                </span>
+              )}
+              {sourceUrl && (
+                <a
+                  href={sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-line/80 bg-surface-bright px-6 py-3 text-sm font-semibold text-ink transition-colors hover:border-primary/50 hover:text-primary"
+                >
+                  <ExternalLink className="h-5 w-5" /> View at Source
+                </a>
+              )}
+              <button
+                type="button"
+                onClick={() => { navigator.clipboard?.writeText(window.location.href); }}
+                className="rounded-lg p-3 text-muted transition-colors hover:bg-surface-container hover:text-primary"
+                aria-label="Share"
               >
-                <Download className="h-5 w-5" /> Download PDF
-              </a>
-            ) : (
-              <span className="inline-flex items-center gap-2 rounded-lg bg-surface-container px-4 py-2 text-sm font-semibold text-on-surface-variant">
-                <Info className="h-4 w-4" /> Metadata only — no PDF stored
-              </span>
-            )}
-            {sourceUrl && (
-              <a
-                href={sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 border border-primary text-primary px-6 py-3 rounded-lg font-bold hover:bg-surface-container-low transition-colors"
-              >
-                <ExternalLink className="h-5 w-5" /> View at Source
-              </a>
-            )}
-            <button
-              type="button"
-              onClick={() => { navigator.clipboard?.writeText(window.location.href); }}
-              className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors p-2"
-              aria-label="Share"
-            >
-              <Share2 className="h-5 w-5" />
-            </button>
-            <button type="button" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors p-2" aria-label="Bookmark">
-              <Bookmark className="h-5 w-5" />
-            </button>
+                <Share2 className="h-5 w-5" />
+              </button>
+              <button type="button" className="rounded-lg p-3 text-muted transition-colors hover:bg-surface-container hover:text-primary" aria-label="Bookmark">
+                <Bookmark className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:items-start">
-        <div className="lg:col-span-8 flex flex-col gap-12">
+      {/* ── Body ── */}
+      <div className="container-custom py-10 md:py-12 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px] lg:items-start">
+        <div className="min-w-0 flex flex-col gap-12">
           {/* Why it matters (AI, DB-served) */}
           {paper.ai_significance && (
-            <div className="rounded-xl border border-primary/20 bg-secondary-container/40 p-5 flex gap-3">
-              <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+            <div className="flex gap-3 rounded-2xl border border-primary/20 bg-secondary-container/40 p-5">
+              <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
-                <p className="text-[11px] uppercase tracking-[0.14em] font-bold text-on-secondary-container mb-1">Why it matters</p>
-                <p className="text-sm leading-relaxed text-on-surface">{paper.ai_significance}</p>
+                <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.14em] text-on-secondary-container">Why it matters</p>
+                <p className="text-sm leading-relaxed text-ink">{paper.ai_significance}</p>
               </div>
             </div>
           )}
 
-          {/* Abstract */}
+          {/* AI analysis */}
           <section>
-            <h2 className="text-lg font-semibold text-primary border-b border-outline-variant pb-2 mb-6">Abstract</h2>
-            <p className="text-base leading-relaxed text-on-surface-variant whitespace-pre-line">{paper.abstract}</p>
-          </section>
-
-          {/* Keywords / AI tags */}
-          {(aiTags.length > 0 || keywords.length > 0) && (
-            <section>
-              <h2 className="text-lg font-semibold text-primary border-b border-outline-variant pb-2 mb-4">
-                {aiTags.length > 0 ? 'Topics & Tags' : 'Keywords'}
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {(aiTags.length > 0 ? aiTags : keywords).map((kw: string) => (
-                  <span key={kw} className="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">{kw}</span>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* AI analysis — pulled to the top for visibility */}
-          <section className="order-first">
-            <div className="flex items-center gap-2 border-b border-outline-variant pb-2 mb-4">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <h2 className="text-lg font-semibold text-primary">AI Analysis</h2>
-            </div>
+            <h2 className={`${sectionHeading} flex items-center gap-2`}>
+              <Sparkles className="h-5 w-5 text-primary" /> AI Analysis
+            </h2>
 
             {!paper.ai_processed_at ? (
-              <div className="rounded-xl border border-dashed border-outline-variant bg-surface-container-low p-6 text-sm text-on-surface-variant">
+              <div className="rounded-2xl border border-dashed border-line bg-surface-container-low p-6 text-sm text-muted">
                 AI analysis isn’t available for this paper yet.
               </div>
             ) : (
               <>
-                <div className="flex flex-wrap gap-3 mb-5">
+                <div className="mb-5 flex flex-wrap gap-3">
                   {([
                     { key: 'highlights', label: 'Highlights', icon: Highlighter },
                     { key: 'summary', label: 'Generate Summary', icon: FileText },
@@ -314,7 +319,7 @@ export const PaperDetailPage = () => {
                         key={b.key}
                         type="button"
                         onClick={() => openAiTab(b.key)}
-                        className={`inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] transition-colors ${active ? 'bg-primary text-on-primary' : 'border border-primary/40 text-primary hover:bg-surface-container-low'}`}
+                        className={`inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.08em] transition-colors ${active ? 'bg-primary text-neutral' : 'border border-line/80 text-primary hover:bg-surface-container-low'}`}
                       >
                         <Icon className="h-4 w-4" /> {b.label}
                       </button>
@@ -322,28 +327,28 @@ export const PaperDetailPage = () => {
                   })}
                 </div>
 
-                <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-6 min-h-[150px]">
+                <div className={`${card} p-6 min-h-[150px]`}>
                   {!aiTab ? (
-                    <p className="text-sm text-on-surface-variant flex items-center gap-2">
+                    <p className="flex items-center gap-2 text-sm text-muted">
                       <Sparkles className="h-4 w-4 text-primary" />
                       Pick an option above to view the AI-generated analysis for this paper.
                     </p>
                   ) : aiProcessing ? (
-                    <div className="flex flex-col items-center justify-center gap-3 py-8 text-on-surface-variant">
+                    <div className="flex flex-col items-center justify-center gap-3 py-8 text-muted">
                       <Loader2 className="h-7 w-7 animate-spin text-primary" />
                       <p className="text-sm font-medium">AI processing…</p>
                     </div>
                   ) : aiTab === 'summary' ? (
-                    <p className="text-base leading-relaxed text-on-surface-variant whitespace-pre-line">
+                    <p className="text-base leading-relaxed text-muted whitespace-pre-line">
                       {paper.ai_summary || 'No summary available.'}
                     </p>
                   ) : aiTab === 'short' ? (
-                    <p className="text-base leading-relaxed text-on-surface font-medium">
+                    <p className="text-base font-medium leading-relaxed text-ink">
                       {paper.ai_short_summary || 'No short summary available.'}
                     </p>
                   ) : (
                     <div className="space-y-5">
-                      <p className="text-base leading-relaxed text-on-surface-variant">
+                      <p className="text-base leading-relaxed text-muted">
                         {renderWithHighlights(paper.abstract || '', Array.isArray(paper.ai_highlights) ? paper.ai_highlights : [])}
                       </p>
                       {Array.isArray(paper.ai_highlights) && paper.ai_highlights.length > 0 && (
@@ -352,7 +357,7 @@ export const PaperDetailPage = () => {
                           <ul className="space-y-2">
                             {paper.ai_highlights.map((h: string, i: number) => (
                               <li key={i} className="text-sm leading-relaxed">
-                                <mark className="bg-yellow-200 text-on-surface rounded px-1 py-0.5">{h}</mark>
+                                <mark className="rounded bg-yellow-200 px-1 py-0.5 text-on-surface">{h}</mark>
                               </li>
                             ))}
                           </ul>
@@ -365,22 +370,40 @@ export const PaperDetailPage = () => {
             )}
           </section>
 
+          {/* Abstract */}
+          <section>
+            <h2 className={sectionHeading}>Abstract</h2>
+            <p className="text-base leading-relaxed text-muted whitespace-pre-line">{paper.abstract}</p>
+          </section>
+
+          {/* Keywords / AI tags */}
+          {(aiTags.length > 0 || keywords.length > 0) && (
+            <section>
+              <h2 className={sectionHeading}>{aiTags.length > 0 ? 'Topics & Tags' : 'Keywords'}</h2>
+              <div className="flex flex-wrap gap-2">
+                {(aiTags.length > 0 ? aiTags : keywords).map((kw: string) => (
+                  <span key={kw} className="rounded-full bg-secondary-container px-3 py-1 text-xs font-semibold text-on-secondary-container">{kw}</span>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Full text */}
           <section>
-            <h2 className="text-lg font-semibold text-primary border-b border-outline-variant pb-2 mb-6">Full Text</h2>
-            <div className="h-[800px] w-full bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant">
+            <h2 className={sectionHeading}>Full Text</h2>
+            <div className="h-[800px] w-full overflow-hidden rounded-2xl border border-line/70 bg-surface-container-lowest">
               {pdfStored && pdfUrl ? (
-                <iframe src={`${pdfUrl}#toolbar=0&navpanes=0`} className="w-full h-full border-none" title="PDF Viewer" />
+                <iframe src={`${pdfUrl}#toolbar=0&navpanes=0`} className="h-full w-full border-none" title="PDF Viewer" />
               ) : (
-                <div className="flex flex-col items-center justify-center h-full text-on-surface-variant space-y-4 px-6 text-center">
+                <div className="flex h-full flex-col items-center justify-center space-y-4 px-6 text-center text-muted">
                   <FileText className="h-10 w-10 opacity-40" />
-                  <p className="font-semibold text-primary">Full text hosted at the source</p>
-                  <p className="text-sm max-w-md">
+                  <p className="font-serif text-lg font-semibold text-ink">Full text hosted at the source</p>
+                  <p className="max-w-md text-sm">
                     This record holds verified metadata. The publisher hosts the full PDF externally —
                     {sourceUrl ? ' open it at the source.' : ' no open-access link is available.'}
                   </p>
                   {sourceUrl && (
-                    <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-primary text-on-primary px-5 py-2.5 text-sm font-semibold hover:bg-primary-dark transition-colors">
+                    <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-neutral transition-colors hover:bg-primary-dark">
                       <ExternalLink className="h-4 w-4" /> View at Source
                     </a>
                   )}
@@ -391,82 +414,80 @@ export const PaperDetailPage = () => {
 
           {/* Discussion */}
           <section className="space-y-8">
-            <h2 className="text-lg font-semibold text-primary border-b border-outline-variant pb-2">Discussion</h2>
+            <h2 className="font-serif text-2xl font-bold text-ink border-b border-line/60 pb-3">Discussion</h2>
 
-            <form onSubmit={handleCommentSubmit} className="bg-surface-container-low border border-outline-variant rounded-xl p-6 space-y-4">
-              <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Add a Comment</h4>
+            <form onSubmit={handleCommentSubmit} className={`${card} space-y-4 p-6`}>
+              <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Add a Comment</h4>
               <input
                 type="text"
                 value={commentName}
                 onChange={(e) => setCommentName(e.target.value)}
                 placeholder="Your name"
-                className="w-full border border-outline-variant bg-surface-container-lowest rounded-lg px-3 py-3 outline-none focus:border-primary"
+                className="w-full rounded-lg border border-line/70 bg-surface-bright px-3 py-3 outline-none focus:border-primary"
                 required
               />
               <textarea
                 value={commentBody}
                 onChange={(e) => setCommentBody(e.target.value)}
                 placeholder="Write your comment…"
-                className="w-full min-h-28 border border-outline-variant bg-surface-container-lowest rounded-lg px-3 py-3 outline-none focus:border-primary"
+                className="min-h-28 w-full rounded-lg border border-line/70 bg-surface-bright px-3 py-3 outline-none focus:border-primary"
                 required
               />
-              <button type="submit" className="bg-primary text-on-primary px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-[0.1em] hover:bg-primary-dark transition-colors">Submit</button>
-              {commentStatus && <p className="text-sm text-on-surface-variant">{commentStatus}</p>}
+              <button type="submit" className="rounded-lg bg-primary px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] text-neutral transition-colors hover:bg-primary-dark">Submit</button>
+              {commentStatus && <p className="text-sm text-muted">{commentStatus}</p>}
             </form>
 
             <div className="space-y-6">
               {comments.length === 0 ? (
-                <p className="text-sm text-on-surface-variant italic">No approved comments yet.</p>
+                <p className="text-sm italic text-muted">No approved comments yet.</p>
               ) : comments.map((comment) => (
                 <div key={comment.id} className="space-y-2">
-                  <div className="flex justify-between items-baseline">
+                  <div className="flex items-baseline justify-between">
                     <h4 className="text-xs font-semibold uppercase tracking-[0.12em] text-secondary">{comment.commenter_name}</h4>
-                    <span className="text-[11px] text-on-surface-variant">{new Date(comment.created_at).toLocaleDateString()}</span>
+                    <span className="text-[11px] text-muted">{new Date(comment.created_at).toLocaleDateString()}</span>
                   </div>
-                  <p className="text-sm leading-relaxed text-on-surface-variant whitespace-pre-wrap">{comment.body}</p>
-                  <div className="h-px w-12 bg-outline-variant" />
+                  <p className="text-sm leading-relaxed text-muted whitespace-pre-wrap">{comment.body}</p>
+                  <div className="h-px w-12 bg-line" />
                 </div>
               ))}
             </div>
 
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[11px] uppercase tracking-[0.12em] text-on-surface-variant">
+              <p className="text-[11px] uppercase tracking-[0.12em] text-muted">
                 Page {commentsMeta.page} of {commentsMeta.totalPages} • {commentsMeta.total} comments
               </p>
               <div className="flex gap-2">
-                <button type="button" disabled={!commentsMeta.hasPrev} onClick={() => setCommentsPage((p) => Math.max(1, p - 1))} className="border border-outline-variant px-3 py-2 rounded text-[11px] uppercase tracking-[0.1em] disabled:opacity-50 hover:bg-surface-container">Previous</button>
-                <button type="button" disabled={!commentsMeta.hasNext} onClick={() => setCommentsPage((p) => p + 1)} className="border border-outline-variant px-3 py-2 rounded text-[11px] uppercase tracking-[0.1em] disabled:opacity-50 hover:bg-surface-container">Next</button>
+                <button type="button" disabled={!commentsMeta.hasPrev} onClick={() => setCommentsPage((p) => Math.max(1, p - 1))} className="rounded border border-line/80 px-3 py-2 text-[11px] uppercase tracking-[0.1em] transition-colors hover:bg-surface-container disabled:opacity-50">Previous</button>
+                <button type="button" disabled={!commentsMeta.hasNext} onClick={() => setCommentsPage((p) => p + 1)} className="rounded border border-line/80 px-3 py-2 text-[11px] uppercase tracking-[0.1em] transition-colors hover:bg-surface-container disabled:opacity-50">Next</button>
               </div>
             </div>
           </section>
         </div>
 
-        {/* Right rail */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="bg-surface-container-lowest border border-outline-variant p-6 rounded-xl shadow-[0px_4px_20px_rgba(45,45,45,0.05)]">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant mb-4 flex items-center gap-2">
-              <Info className="h-[18px] w-[18px]" /> Scientific Metadata
-            </h3>
+        {/* ── Right rail ── */}
+        <aside className="space-y-6 lg:sticky lg:top-20">
+          <div className={`${card} p-6`}>
+            <h3 className="label-caps mb-4 flex items-center gap-2"><Info className="h-4 w-4" /> Scientific Metadata</h3>
             <dl className="space-y-4">
               {paper.doi && (
                 <div>
-                  <dt className="text-xs font-semibold uppercase tracking-[0.05em] text-on-surface-variant">DOI</dt>
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">DOI</dt>
                   <dd>
-                    <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-primary hover:underline break-all">{paper.doi}</a>
+                    <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer" className="font-mono-label text-xs text-primary hover:underline break-all">{paper.doi}</a>
                   </dd>
                 </div>
               )}
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-[0.05em] text-on-surface-variant">Publication Date</dt>
-                <dd className="text-sm">{pubDate}</dd>
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">Publication Date</dt>
+                <dd className="text-sm text-ink">{pubDate}</dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-[0.05em] text-on-surface-variant">Source / Journal</dt>
-                <dd className="text-sm">{sourceName}</dd>
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">Source / Journal</dt>
+                <dd className="text-sm text-ink">{sourceName}</dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-[0.05em] text-on-surface-variant">License</dt>
-                <dd className="text-sm">
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">License</dt>
+                <dd className="text-sm text-ink">
                   {license ? (
                     license.url ? (
                       <a href={license.url} target="_blank" rel="noopener noreferrer license" className="text-primary hover:underline">{license.name}</a>
@@ -479,65 +500,71 @@ export const PaperDetailPage = () => {
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-[0.05em] text-on-surface-variant">Indexed Via</dt>
-                <dd className="text-sm flex items-center gap-1">OpenAlex / Semantic Scholar <BadgeCheck className="h-3.5 w-3.5 text-secondary" /></dd>
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.05em] text-muted">Indexed Via</dt>
+                <dd className="flex items-center gap-1 text-sm text-ink">OpenAlex / Semantic Scholar <BadgeCheck className="h-3.5 w-3.5 text-secondary" /></dd>
               </div>
-              <div className="pt-4 border-t border-outline-variant">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">
-                  <span className="w-2 h-2 bg-secondary rounded-full" />
+              <div className="border-t border-line/60 pt-4">
+                <div className="inline-flex items-center gap-2 rounded-full bg-secondary-container px-3 py-1 text-xs font-bold text-on-secondary-container">
+                  <span className="h-2 w-2 rounded-full bg-secondary" />
                   {license ? 'Open Access' : 'Status: ' + (paper.status || 'approved')}
                 </div>
               </div>
             </dl>
           </div>
 
-          <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant mb-4">How to Cite</h3>
-            <div className="flex gap-2 mb-3">
+          <div className={`${card} p-6`}>
+            <h3 className="label-caps mb-4">How to Cite</h3>
+            <div className="mb-3 flex gap-2">
               {(['apa', 'mla', 'bibtex'] as const).map((style) => (
                 <button
                   key={style}
                   onClick={() => setCitationStyle(style)}
-                  className={`text-[11px] uppercase tracking-[0.1em] px-2.5 py-1 rounded transition-colors ${citationStyle === style ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface hover:bg-outline-variant'}`}
+                  className={`rounded px-2.5 py-1 text-[11px] uppercase tracking-[0.1em] transition-colors ${citationStyle === style ? 'bg-primary text-neutral' : 'bg-surface-container text-ink hover:bg-surface-container-high'}`}
                 >
                   {style}
                 </button>
               ))}
             </div>
-            <p className="text-sm text-on-surface mb-4 whitespace-pre-wrap leading-relaxed">{citationText || 'Citation unavailable.'}</p>
-            <button onClick={handleCopyCitation} className="w-full bg-surface-container-high hover:bg-outline-variant text-on-surface py-2 rounded text-xs font-semibold transition-colors flex items-center justify-center gap-1.5">
+            <p className="mb-4 whitespace-pre-wrap text-sm leading-relaxed text-ink">{citationText || 'Citation unavailable.'}</p>
+            <button onClick={handleCopyCitation} className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-surface-container py-2.5 text-xs font-semibold text-ink transition-colors hover:bg-surface-container-high">
               {copied ? <CheckCircle2 className="h-[18px] w-[18px]" /> : <Copy className="h-[18px] w-[18px]" />} {copied ? 'Copied!' : 'Copy Citation'}
             </button>
           </div>
 
-          <h3 className="text-lg font-semibold text-primary mb-2">Related Research</h3>
-          {related.length === 0 ? (
-            <p className="text-sm text-on-surface-variant">No related papers yet.</p>
-          ) : related.map((rel) => (
-            <Link key={rel.id} to={`/paper/${rel.id}`} className="block bg-surface-container-lowest border border-outline-variant p-4 rounded-lg group hover:border-secondary transition-all">
-              <img src={`https://picsum.photos/seed/${rel.id}/400/200`} alt="" className="w-full h-32 object-cover rounded mb-4" referrerPolicy="no-referrer" />
-              <span className="text-xs font-bold uppercase tracking-[0.1em] text-secondary">{rel.topic}</span>
-              <h4 className="font-bold text-on-surface mt-2 group-hover:text-primary transition-colors line-clamp-2">{rel.title}</h4>
-              <p className="text-xs text-on-surface-variant mt-1">{rel.author_names || 'Unknown author'}</p>
-            </Link>
-          ))}
+          <div>
+            <h3 className="label-caps mb-3">Related Research</h3>
+            <div className="space-y-4">
+              {related.length === 0 ? (
+                <p className="text-sm text-muted">No related papers yet.</p>
+              ) : related.map((rel) => (
+                <Link key={rel.id} to={`/paper/${rel.id}`} className={`${card} group block overflow-hidden transition-all hover:-translate-y-0.5 hover:border-primary/40`}>
+                  <img src={`https://picsum.photos/seed/${rel.id}/400/200`} alt="" className="h-32 w-full object-cover" referrerPolicy="no-referrer" />
+                  <div className="p-4">
+                    <span className="label-caps">{rel.topic}</span>
+                    <h4 className="mt-2 font-serif text-base font-bold leading-snug text-ink transition-colors group-hover:text-primary line-clamp-2">{rel.title}</h4>
+                    <p className="mt-1 text-xs text-muted">{rel.author_names || 'Unknown author'}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
 
-          <div className="bg-primary-container text-on-primary-container p-6 rounded-xl flex items-start gap-4">
-            <ShieldCheck className="h-8 w-8 shrink-0" />
+          <div className="flex items-start gap-4 rounded-2xl bg-primary-dark p-6 text-neutral">
+            <ShieldCheck className="h-8 w-8 shrink-0 text-primary-fixed" />
             <div>
-              <h4 className="font-bold mb-1">License &amp; Attribution</h4>
-              <p className="text-sm opacity-90">
+              <h4 className="font-serif text-lg font-bold">License &amp; Attribution</h4>
+              <p className="mt-1 text-sm text-neutral/80">
                 {license
                   ? `Published by ${sourceName} under the ${license.name} license${license.requiresAttribution ? ', which permits sharing and adaptation with attribution to the original authors and source.' : ' (public domain).'}`
                   : 'License is recorded per the ingestion policy. See the source for full terms.'}
               </p>
               {license?.url && (
-                <a href={license.url} target="_blank" rel="noopener noreferrer license" className="inline-block mt-3 text-xs font-bold underline">Read {license.name} Terms</a>
+                <a href={license.url} target="_blank" rel="noopener noreferrer license" className="mt-3 inline-block text-xs font-bold text-primary-fixed underline">Read {license.name} Terms</a>
               )}
             </div>
           </div>
-        </div>
+        </aside>
       </div>
-    </main>
+    </div>
   );
 };
