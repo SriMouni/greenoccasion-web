@@ -5,7 +5,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useJournal } from '../lib/journal';
 import { useJsonLd } from '../lib/seo';
-import { CallForPapers, openCallForPapers } from './CallForPapers';
+import { CallForPapers } from './CallForPapers';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -81,17 +81,6 @@ export const Navbar = () => {
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={openCallForPapers}
-            className={cn(
-              'hidden lg:inline-flex items-center text-[13px] font-medium transition-colors',
-              overlay ? 'text-neutral/80 hover:text-neutral' : 'text-muted hover:text-primary'
-            )}
-          >
-            Call for Papers
-          </button>
-
           <div className="hidden lg:flex items-center">
             <Link
               to="/submit"
@@ -135,13 +124,6 @@ export const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
-              <button
-                type="button"
-                onClick={() => { setMobileOpen(false); openCallForPapers(); }}
-                className="mt-2 inline-flex items-center justify-center rounded-md border border-primary/40 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-primary"
-              >
-                Call for Papers
-              </button>
               <Link
                 to="/submit"
                 target="_blank"
