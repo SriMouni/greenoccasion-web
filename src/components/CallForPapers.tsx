@@ -7,7 +7,7 @@ import { useJournal } from '../lib/journal';
 // pill; expanded it takes an email + phone and notifies the editorial inbox.
 export const CallForPapers = () => {
   const { name: journalName } = useJournal();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle');
   const [error, setError] = useState('');
   const [form, setForm] = useState({ email: '', phone: '' });
@@ -38,14 +38,14 @@ export const CallForPapers = () => {
   return (
     <div className="fixed bottom-5 right-5 z-[100] print:hidden">
       {open ? (
-        <div className="w-[19rem] overflow-hidden rounded-2xl bg-surface-bright shadow-[0_18px_50px_rgba(4,47,46,0.28)] ring-1 ring-line/60">
+        <div className="w-[22rem] max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-2xl bg-surface-bright shadow-[0_18px_50px_rgba(4,47,46,0.28)] ring-1 ring-line/60">
           {/* Header */}
-          <div className="relative bg-primary-dark px-5 py-4 text-neutral">
-            <button onClick={() => setOpen(false)} aria-label="Close" className="absolute right-2.5 top-2.5 rounded-lg p-1.5 text-neutral/70 hover:bg-neutral/10 hover:text-neutral">
+          <div className="relative bg-primary-dark px-6 py-5 text-neutral">
+            <button onClick={() => setOpen(false)} aria-label="Minimize" title="Minimize" className="absolute right-2.5 top-2.5 rounded-lg p-1.5 text-neutral/70 hover:bg-neutral/10 hover:text-neutral">
               <X className="h-4 w-4" />
             </button>
             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-neutral/70">Open for submissions</p>
-            <h3 className="mt-1 font-serif text-lg font-bold leading-snug">Publish with {journalName}</h3>
+            <h3 className="mt-1 font-serif text-xl font-bold leading-snug">Publish with {journalName}</h3>
           </div>
 
           {status === 'done' ? (
@@ -56,7 +56,7 @@ export const CallForPapers = () => {
               <button onClick={() => setOpen(false)} className="mt-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-neutral hover:bg-primary-dark transition-colors">Close</button>
             </div>
           ) : (
-            <form onSubmit={submit} className="space-y-2.5 px-5 py-4">
+            <form onSubmit={submit} className="space-y-3 px-6 py-5">
               <p className="text-xs leading-relaxed text-muted">Leave your contact and we'll get in touch about submitting your research.</p>
               <input required type="email" placeholder="Email address" value={form.email} onChange={(e) => set('email', e.target.value)} className={inputCls} />
               <input required type="tel" placeholder="Phone number" value={form.phone} onChange={(e) => set('phone', e.target.value)} className={inputCls} />
