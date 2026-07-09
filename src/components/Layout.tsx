@@ -83,6 +83,8 @@ export const Navbar = () => {
           <div className="hidden lg:flex items-center">
             <Link
               to="/submit"
+              target="_blank"
+              rel="noopener noreferrer"
               className={cn(
                 'inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] transition-colors',
                 overlay ? 'bg-neutral text-primary-dark hover:bg-neutral/90' : 'bg-primary text-neutral hover:bg-primary-dark'
@@ -123,6 +125,8 @@ export const Navbar = () => {
               ))}
               <Link
                 to="/submit"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setMobileOpen(false)}
                 className="mt-2 inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] text-neutral"
               >
