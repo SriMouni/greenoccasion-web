@@ -1,12 +1,17 @@
 import { useState, type FormEvent } from 'react';
-import { Send, CheckCircle2 } from 'lucide-react';
+import { X, Send, CheckCircle2, PenLine } from 'lucide-react';
 import { apiUrl, JOURNAL_SLUG } from '../lib/api-base';
 import { useJournal } from '../lib/journal';
 
-// A persistent rectangular box pinned to the bottom-right corner. Always visible,
-// always showing its details — captures email + phone and notifies the editor inbox.
+// Corner "Publish with us" contact box.
+//  - Desktop: shows the full card by default; a ✕ collapses it to a small icon.
+//  - Mobile: shows only a small icon so it never covers the page; tap to open.
+// Either way it captures email + phone and notifies the editorial inbox.
+const isDesktop = () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches;
+
 export const CallForPapers = () => {
   const { name: journalName } = useJournal();
+  const [open, setOpen] = useState<boolean>(isDesktop);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle');
   const [error, setError] = useState('');
   const [form, setForm] = useState({ email: '', phone: '' });
@@ -34,22 +39,39 @@ export const CallForPapers = () => {
 
   const inputCls = 'w-full rounded-lg border border-line/70 bg-surface-bright px-3 py-2.5 text-sm text-ink outline-none focus:border-primary transition-colors';
 
+  // Collapsed: a small floating icon button.
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label={`Publish with ${journalName}`}
+        className="fixed bottom-5 right-5 z-[100] flex h-14 w-14 items-center justify-center rounded-full bg-primary text-neutral shadow-[0_10px_30px_rgba(4,47,46,0.35)] transition-colors hover:bg-primary-dark print:hidden"
+      >
+        <PenLine className="h-6 w-6" />
+      </button>
+    );
+  }
+
   return (
-    <div className="fixed bottom-5 right-5 z-[100] w-[22rem] max-w-[calc(100vw-2.5rem)] overflow-hidden border border-line/60 bg-surface-bright shadow-[0_18px_50px_rgba(4,47,46,0.28)] print:hidden">
+    <div className="fixed bottom-5 right-5 z-[100] w-[20rem] max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-2xl bg-surface-bright shadow-[0_18px_50px_rgba(4,47,46,0.28)] ring-1 ring-line/60 print:hidden">
       {/* Header */}
-      <div className="bg-primary-dark px-6 py-5 text-neutral">
+      <div className="relative bg-primary-dark px-5 py-4 text-neutral">
+        <button onClick={() => setOpen(false)} aria-label="Close" title="Close" className="absolute right-2.5 top-2.5 rounded-lg p-1.5 text-neutral/70 hover:bg-neutral/10 hover:text-neutral">
+          <X className="h-4 w-4" />
+        </button>
         <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-neutral/70">Open for submissions</p>
-        <h3 className="mt-1 font-serif text-xl font-bold leading-snug">Publish with {journalName}</h3>
+        <h3 className="mt-1 pr-6 font-serif text-lg font-bold leading-snug">Publish with {journalName}</h3>
       </div>
 
       {status === 'done' ? (
-        <div className="flex flex-col items-center gap-2 px-6 py-8 text-center">
+        <div className="flex flex-col items-center gap-2 px-5 py-7 text-center">
           <CheckCircle2 className="h-10 w-10 text-secondary" />
           <p className="font-serif text-base font-bold text-ink">Thank you!</p>
           <p className="text-xs text-muted">Our editorial team will reach out to you shortly.</p>
         </div>
       ) : (
-        <form onSubmit={submit} className="space-y-3 px-6 py-5">
+        <form onSubmit={submit} className="space-y-2.5 px-5 py-4">
           <p className="text-xs leading-relaxed text-muted">Leave your contact and we'll get in touch about submitting your research.</p>
           <input required type="email" placeholder="Email address" value={form.email} onChange={(e) => set('email', e.target.value)} className={inputCls} />
           <input required type="tel" placeholder="Phone number" value={form.phone} onChange={(e) => set('phone', e.target.value)} className={inputCls} />
