@@ -34,12 +34,12 @@ jobs:
           # Custom root domain (thecarbonreview.org) → served at the root path.
           BASE_PATH: /
           # Backend API origin — all /api and /uploads calls are prefixed with this.
-          VITE_API_BASE_URL: https://jms.greenoccasion.in
+          VITE_API_BASE_URL: https://jms.thecarbonreview.org
           # This site serves ONE journal (its heading/theme come from this slug).
           # A separate journal site would set a different slug.
           VITE_JOURNAL_SLUG: green-occasion
           # Author portal (JMS) for the "Submit Research" handoff.
-          VITE_JMS_URL: https://jms.greenoccasion.in
+          VITE_JMS_URL: https://jms.thecarbonreview.org
 
       - name: SPA fallback (GitHub Pages serves 404.html for unknown paths)
         run: cp dist/index.html dist/404.html
